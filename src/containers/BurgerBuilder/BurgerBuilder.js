@@ -56,6 +56,9 @@ class BurgerBuilder extends Component {
         this.updatePurchaseState(updatedIngredients);
     }
 
+    purchaseCancelHandler = () => {
+        this.setState({purchasing: false});
+    }
     removeIngredientHandler = (type) => {
         const oldCount = this.state.ingredients[type];
         if (oldCount <= 0 ) {
@@ -73,11 +76,18 @@ class BurgerBuilder extends Component {
         this.updatePurchaseState(updatedIngredients);
     }
 
+    purchaseContinueHandler = () => {
+        alert('You continue!')
+    }
     render() {
         return (
         <Auxi>
-            <Modal show ={this.state.purchasing}>
-                <OrderSummary ingredients = {this.state.ingredients}/>
+            <Modal show ={this.state.purchasing} modalClosed={this.purchaseCancelHandler}>
+                <OrderSummary 
+                    ingredients = {this.state.ingredients} 
+                    purchaseCancelled={this.purchaseCancelHandler}
+                    purchaseContinue={this.purchaseContinueHandler} 
+                    price={this.state.totalPrice.toFixed(2)}/>
             </Modal>
             <Burger ingredients={this.state.ingredients}/>
             <BuildControls 
