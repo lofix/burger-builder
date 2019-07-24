@@ -6,7 +6,7 @@ const input = (props) => {
     let inputElement = null;
     const inputClasses = [modules.InputElement];
 
-    if (props.invalid) {
+    if (props.invalid && props.shouldValidate && props.touched) {
         inputClasses.push(modules.Invalid);
     }
 
@@ -42,11 +42,15 @@ const input = (props) => {
                 value={props.value}
                 onChange={props.changed} />
     }
-
+    let validationError = null;
+    if (props.invalid && props.touched ) {
+        validationError = <p className={modules.ValidationError} >Please enter a valid value!</p>
+    }
     return (
         <div className={modules.Input}>
             <label className={modules.Label}>{props.label}</label>
             {inputElement}
+            {validationError}
         </div>
     )
 };
