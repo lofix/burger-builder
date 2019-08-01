@@ -6,7 +6,7 @@ import Modal from '../../components/UI/Modal/Modal';
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/WithErrorHandler/WithErrorHandler';
-import * as actionTypes from '../../store/actions/actionTypes';
+import * as actions from '../../store/actions/index';
 
 import Auxi from '../../hoc/Auxi/Auxi';
 
@@ -14,17 +14,13 @@ import axios from '../../axios-orders';
 
 class BurgerBuilder extends Component {
     state = {
-        purchasing: false,
-        loading: false
+        purchasing: false
     }
 
     componentDidMount () {
-    //     axios.get('https://react-my-burger-cf7d0.firebaseio.com/ingredients.json')
-    //         .then(response => {
-    //             this.setState({ingredients:response.data })
-    //         })
-    //         .catch(error => {});
+        this.props.onInitIgredients();
     }
+
     purchaseHandler = () => {
         this.setState({purchasing: true});
     }
@@ -45,6 +41,7 @@ class BurgerBuilder extends Component {
     }
 
     purchaseContinueHandler = () => {
+        this.props.onInitPurchase();
         this.props.history.push({
             pathname: '/checkout'
         })
@@ -91,20 +88,17 @@ class BurgerBuilder extends Component {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onIngredientAdded: (ingredientName) => dispatch ({
-            type: actionTypes.ADD_INGREDIENT,
-            ingredientName            
-        }),
-        onIngredientRemoved: (ingredientName) => dispatch ({
-            type: actionTypes.REMOVE_INGREDIENT,
-            ingredientName            
-        })
+        onIngredientAdded: (ingredientName) => dispatch (actions.addIngredient(ingredientName)),
+        onIngredientRemoved: (ingredientName) => dispatch (actions.removeIngredient(ingredientName)),
+        onInitIgredients: () => dispatch(actions.initIngredients()),
+        onInitPurchase: () => dispatch(actions.purchaseInit())
     };
 };
 const mapStateToProps = state => {
     return {
-        ings: state.ingredients,
-        price: state.totalPrice
+        ings: state.burgerBuilder.ingredients,
+        price: state.burgerBuilder.totalPrice,
+        error: state.burgerBuilder.error
     };
 };
 
