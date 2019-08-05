@@ -46,16 +46,15 @@ export const auth = (email, password, isSignUp) => {
             email,
             password,
             returnSecureToken: true
-        }
+        };
         let url = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCFso18pPlYtnmIaKU8_zEnZoSpG0111Zc';
         if (!isSignUp) {
             url = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCFso18pPlYtnmIaKU8_zEnZoSpG0111Zc'
         }
         axios.post(url, authData)
             .then(response => {
-                console.log(response);
                 const expirationDate = new Date(new Date().getTime() + response.data.expiresIn * 1000)
-                localStorage.setItme('token', response.data.idToken);
+                localStorage.setItem('token', response.data.idToken);
                 localStorage.setItem('expirationDate', expirationDate);
                 localStorage.setItem('userId', response.data.localId);
                 dispatch(authSuccess(response.data.idToken, response.data.localId));

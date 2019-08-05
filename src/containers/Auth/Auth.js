@@ -88,6 +88,7 @@ class Auth extends Component {
             return {isSignup: !prevState.isSignup}
         })
     }
+    
     render () {
         const formElementsArray = [];
         Object.keys(this.state.controls).map(key => {
