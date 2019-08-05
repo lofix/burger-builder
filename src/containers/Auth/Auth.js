@@ -9,6 +9,7 @@ import Spinner from '../../components/UI/Spinner/Spinner';
 import modules from './Auth.module.css';
 
 import * as actions from '../../store/actions/auth';
+import { updateObject, checkValidation } from '../../shared/utility';
 
 class Auth extends Component {
     state = {
@@ -49,32 +50,14 @@ class Auth extends Component {
         }
     }
 
-    checkValidation(val, rule) {
-        let isValid = true;
-        if ( rule.required ) {
-            isValid = val.trim() !== '' && isValid;
-        }
-
-        if (rule.minLength) {
-            isValid = val.length >= rule.minLength  && isValid;
-        }
-
-        if (rule.maxLength) {
-            isValid = val.length >= rule.maxLength  && isValid;
-        }
-        return isValid;
-    }
-
     inputChangedHandler = (event, controlName) => {
-        const updatedControls = {
-            ...this.state.controls,
-            [controlName]: {
-                ...this.state.controls[controlName],
+        const updatedControls = updateObject(this.state.controls, {
+            [controlName]: updateObject(this.state.controls[controlName], {
                 value: event.target.value,
-                valid: this.checkValidation(event.target.value, this.state.controls[controlName].validation),
+                valid: checkValidation(event.target.value, this.state.controls[controlName].validation),
                 touched: true
-            }
-        };
+            })
+        });
         this.setState({controls: updatedControls});
     }
 

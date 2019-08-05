@@ -3,6 +3,8 @@ import axios from '../../../axios-orders';
 import { connect } from 'react-redux';
 import withErrorHandler from '../../../hoc/WithErrorHandler/WithErrorHandler';
 
+import { updateObject, checkValidation } from '../../../shared/utility';
+
 import Button from '../../../components/UI/Button/Button';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import Input from '../../../components/UI/Input/Input';
@@ -114,17 +116,14 @@ class ContactData extends Component {
     }
 
     inputChangedHandler = (e, inputId) => {
-        const updatedOrderForm = {
-            ...this.state.orderForm
-        };
-        const updatedElement = {
-            ...updatedOrderForm[inputId]
-        };
-        updatedElement.value = e.target.value;
-        updatedElement.valid = this.checkValidation(updatedElement.value, updatedElement.validation);
-        updatedElement.touched = true;
-        updatedOrderForm[inputId] = updatedElement;
-
+        const updatedElement = updateObject(this.state.orderForm[inputId], {
+            value: e.target.value,
+            valid: checkValidation(e.target.value, this.state.orderForm[inputId].validation),
+            touched: true
+        });
+        const updatedOrderForm = updateObject(this.state.orderForm, {
+            [inputId]: updatedElement
+        } );
         let isFormValid =  true;
 
         for (let id in updatedOrderForm) {
@@ -135,22 +134,6 @@ class ContactData extends Component {
             orderForm: updatedOrderForm,
             isFormValid
         });
-    }
-
-    checkValidation(val, rule) {
-        let isValid = true;
-        if ( rule.required ) {
-            isValid = val.trim() !== '' && isValid;
-        }
-
-        if (rule.minLength) {
-            isValid = val.length >= rule.minLength  && isValid;
-        }
-
-        if (rule.maxLength) {
-            isValid = val.length >= rule.maxLength  && isValid;
-        }
-        return isValid;
     }
 
     render() {
